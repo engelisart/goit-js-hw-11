@@ -3,12 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <title>Page title</title>
-    <link rel="stylesheet" href="./sass/index.scss" />
-    <script type="module" src="./index.js"></script>
   </head>
   <body>
-    <!-- ❗️❗️❗️ Add partials like so for every page -->
-    <include src="./partials/example.html"></include>
+    <div class="search">
+      <!-- Header styles -->
+      <header class="container">
+        <a class="header-logo" href="./index.html">RESIM</a>
+      </header>
+
+      <!-- Hero Section 1-->
+      <section class="hero container">
+        <h1 class="search-title">Just find your lovely pictures</h1>
+        <form class="search-form" id="search-form">
+          <input
+            class="hero-input"
+            type="text"
+            name="searchQuery"
+            autocomplete="off"
+            placeholder="Search images..."
+          />
+          <button class="btn" type="submit">Search</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Section 2-->
+    <section>
+      <div class="gallery">
+        <!-- Картки зображень -->
+      </div>
+    </section>
+
+    <script src="index.js" type="module"></script>
   </body>
 </html>
