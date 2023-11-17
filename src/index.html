@@ -32,6 +32,7 @@
             name="searchQuery"
             autocomplete="off"
             placeholder="Search images..."
+            required
           />
           <button class="btn" type="submit">Search</button>
         </form>
@@ -39,12 +40,13 @@
     </div>
 
     <!-- Section 2-->
-    <section>
+    <section class="container">
       <div class="gallery js-gallery">
         <!-- Картки зображень -->
       </div>
-
-      <button type="button" class="load-more js-load-more">Load more</button>
+      <div class="btn-loab-more">
+        <button type="button" class="load-more js-load-more is-hidden">Load more</button>
+      </div>
     </section>
 
     <script src="index.js" type="module"></script>

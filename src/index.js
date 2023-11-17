@@ -1,61 +1,83 @@
 import { PicturesAPI } from './pictures-api';
+import { pictureElements } from './pictures-cards';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   formElem: document.querySelector('.js-form'),
   inputElem: document.querySelector('.js-input'),
-  btnLoadMore: document.querySelector('.js-load-more'),
   gallery: document.querySelector('.js-gallery'),
+  btnLoadMore: document.querySelector('.js-load-more'),
 };
+
+var lightbox = new SimpleLightbox('.gallery a');
 
 const picturesAPI = new PicturesAPI();
 
-
 refs.formElem.addEventListener('submit', onFormElemSubmit);
-refs.inputElem.addEventListener('change', onInputElemChange);
+refs.btnLoadMore.addEventListener('click', onBtnLoadMoreClick);
+
+refs.btnLoadMore.classList.add('is-hidden');
 
 function onFormElemSubmit(event) {
   event.preventDefault();
-  picturesAPI.fetchPhotosByQuery().then(data=>{
-    console.log()
-    data.hits.forEach((d)=>{
-        refs.gallery.innerHTML += pictureElements(d)
+
+  const { target: searchQuery } = event;
+
+  picturesAPI.query = event.target.elements.searchQuery.value;
+  picturesAPI.page = 1;
+
+  picturesAPI
+    .fetchPhotosByQuery()
+    .then(data => {
+      if (data.hits.length > 0) {
+        refs.gallery.innerHTML = pictureElements(data.hits);
+
+        refs.formElem.reset();
+        refs.btnLoadMore.classList.remove('is-hidden');
+
+        lightbox.refresh();
+
+        Notify.success('Hooray! We found totalHits images.');
+      } else {
+        refs.gallery.innerHTML = 'Not found!';
+        refs.btnLoadMore.classList.add('is-hidden');
+
+        Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+
+        refs.formElem.reset();
+      }
     })
-  })
-  
+    .catch(err => {
+      console.log(err);
+    });
 }
 
-function onInputElemChange(event) {
-  event.preventDefault();
+function onBtnLoadMoreClick(event) {
+  picturesAPI.page += 1;
 
-  console.log('hello!');
-}
+  picturesAPI
+    .fetchPhotosByQuery()
+    .then(data => {
+      if (data.totalHits === picturesAPI.page) {
+        refs.btnLoadMore.disabled = true;
+      }
 
-function pictureElements({
-  wedformatURL,
-  largeImageURL,
-  tags,
-  likes,
-  views,
-  comments,
-  downloads,
-}) {
-  return `<div class="photo-card">
-<img src="${wedformatURL}" alt="${tags}" loading="lazy" />
-<div class="info">
-  <p class="info-item">
-    <b>${likes}</b>
-  </p>
-  <p class="info-item">
-    <b>${views}</b>
-  </p>
-  <p class="info-item">
-    <b>${comments}</b>
-  </p>
-  <p class="info-item">
-    <b>${downloads}</b>
-  </p>
-</div>
-</div>`;
+      refs.gallery.insertAdjacentHTML('beforeend', pictureElements(data.hits));
+      lightbox.refresh();
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 }
