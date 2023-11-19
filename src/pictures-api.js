@@ -13,7 +13,7 @@ export class PicturesAPI {
     const axiosOptions = {
       params: {
         page: this.page,
-        per_page: 20,
+        per_page: 40,
         key: '40691012-8f236ebf8c6cb98d313bec4db',
         q: this.query,
         image_type: 'photo',

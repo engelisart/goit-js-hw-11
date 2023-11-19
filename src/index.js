@@ -31,6 +31,8 @@ function onFormElemSubmit(event) {
   picturesAPI
     .fetchPhotosByQuery()
     .then(data => {
+      const totalHits = data.totalHits;
+
       if (data.hits.length > 0) {
         refs.gallery.innerHTML = pictureElements(data.hits);
 
@@ -39,7 +41,7 @@ function onFormElemSubmit(event) {
 
         lightbox.refresh();
 
-        Notify.success('Hooray! We found totalHits images.');
+        Notify.success(`Hooray! We found ${totalHits} images.`);
       } else {
         refs.gallery.innerHTML = 'Not found!';
         refs.btnLoadMore.classList.add('is-hidden');
@@ -62,9 +64,7 @@ function onBtnLoadMoreClick(event) {
   picturesAPI
     .fetchPhotosByQuery()
     .then(data => {
-      if (data.totalHits === picturesAPI.page) {
-        refs.btnLoadMore.disabled = true;
-      }
+      console.log(data);
 
       refs.gallery.insertAdjacentHTML('beforeend', pictureElements(data.hits));
       lightbox.refresh();
@@ -76,6 +76,15 @@ function onBtnLoadMoreClick(event) {
         top: cardHeight * 2,
         behavior: 'smooth',
       });
+
+      if(data.hits.length < 40){
+        refs.btnLoadMore.classList.add('is-hidden');
+
+        Notify.info(
+          `We're sorry, but you've reached the end of search results.`
+        );
+      }
+
     })
     .catch(err => {
       console.log(err);
